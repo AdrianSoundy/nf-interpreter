@@ -10,15 +10,13 @@
 #include <nanoCLR_Runtime.h>
 #include <nanoCLR_Checks.h>
 
-#define NUM_I2C_BUSES 2
+#define NUM_I2C_BUSES   2
 #define MAX_I2C_DEVICES 5
-
 
 // Create a handle built from device type, I2C bus number and device index
 #define CreateI2cHandle(i2cBusIndex, deviceIndex) ((CPU_DEVICE_TYPE_I2C << 16) + (i2cBusIndex << 8) + deviceIndex)
-#define GetBusFromHandle(handle) ((handle >> 8) & 0x00ff)
-#define GetDeviceIndexFromHandle(handle)  (handle & 0x00f)
-
+#define GetBusFromHandle(handle)                  ((handle >> 8) & 0x00ff)
+#define GetDeviceIndexFromHandle(handle)          (handle & 0x00f)
 
 struct nanoI2cConfig
 {
@@ -122,13 +120,13 @@ HRESULT nanoI2C_OpenDevice(I2C_DEVICE_CONFIGURATION &config, uint32_t &deviceHan
 {
     (void)config;
     (void)deviceHandle;
-    
+
     // i2cBus 0 to (number of buses - 1)
     uint8_t i2cBusIndex = (uint8_t)config.i2cBus - 1;
     if (i2cBusIndex >= NUM_I2C_BUSES)
         return CLR_E_INVALID_PARAMETER;
 
-       // Initialise Bus if not already initialised
+    // Initialise Bus if not already initialised
     if (!i2cConfig[i2cBusIndex].busInited)
     {
         if (!CPU_I2C_Initialize(i2cBusIndex, config.fastMode))
@@ -156,12 +154,12 @@ HRESULT nanoI2C_OpenDevice(I2C_DEVICE_CONFIGURATION &config, uint32_t &deviceHan
 
     // Return device hanlde
     deviceHandle = CreateI2cHandle(i2cBusIndex, deviceIndex);
-    
+
     i2cConfig[i2cBusIndex].slaveAddress[deviceIndex] = config.address;
-                           
+
     return S_OK;
 }
-    
+
 I2cTransferStatus nanoI2C_WriteRead(
     uint32_t deviceHandle,
     uint8_t *writeBuffer,
@@ -180,20 +178,19 @@ I2cTransferStatus nanoI2C_WriteRead(
         readBuffer,
         readSize);
 }
-    
+
 HRESULT nanoI2C_CloseDevice(uint32_t deviceHandle)
 {
     int i2cBusIndex = GetBusFromHandle(deviceHandle);
     int deviceIndex = GetDeviceIndexFromHandle(deviceHandle);
-    
+
     i2cConfig[i2cBusIndex].slaveAddress[deviceIndex] = 0;
     i2cConfig[i2cBusIndex].devicesInUse--;
-    if (i2cConfig[i2cBusIndex].devicesInUse <=0)
+    if (i2cConfig[i2cBusIndex].devicesInUse <= 0)
     {
         CPU_I2C_Uninitialize(i2cBusIndex);
         i2cConfig[i2cBusIndex].busInited = false;
     }
-    
+
     return S_OK;
 }
-    

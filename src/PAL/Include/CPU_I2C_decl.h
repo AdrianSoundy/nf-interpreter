@@ -29,5 +29,4 @@ I2cTransferStatus CPU_I2C_WriteRead(
     unsigned char *readData,
     int readSize);
 
-
 #endif // _DRIVERS_I2C_DECL_H_

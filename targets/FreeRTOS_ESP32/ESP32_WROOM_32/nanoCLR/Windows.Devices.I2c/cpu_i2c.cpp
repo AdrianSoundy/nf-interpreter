@@ -19,13 +19,11 @@
 // Tag for ESP32 logging
 static const char *TAG = "I2cDevice";
 
-
 void CPU_I2C_GetPins(uint8_t i2cBusIndex, GPIO_PIN &clockPin, GPIO_PIN &dataPin)
 {
     dataPin = (GPIO_PIN)Esp32_GetMappedDevicePins(DEV_TYPE_I2C, i2cBusIndex, 0);
     clockPin = (GPIO_PIN)Esp32_GetMappedDevicePins(DEV_TYPE_I2C, i2cBusIndex, 1);
 }
-
 
 bool CPU_I2C_Initialize(uint8_t i2cBus, bool fastSpeed)
 {
@@ -36,7 +34,7 @@ bool CPU_I2C_Initialize(uint8_t i2cBus, bool fastSpeed)
     CPU_I2C_GetPins(i2cBus, clockPin, dataPin);
 
     // Check pins have been configured
-    if (clockPin == GPIO_PIN_NONE || dataPin == GPIO_PIN_NONE )
+    if (clockPin == GPIO_PIN_NONE || dataPin == GPIO_PIN_NONE)
     {
         ESP_LOGE(TAG, "I2C pins for I2C%d not configured", i2cBus);
         return false;
@@ -56,7 +54,7 @@ bool CPU_I2C_Initialize(uint8_t i2cBus, bool fastSpeed)
     {
         return false;
     }
-    
+
     res = i2c_driver_install((i2c_port_t)i2cBus, I2C_MODE_MASTER, 0, 0, 0);
     if (res != ESP_OK)
     {
@@ -69,7 +67,7 @@ bool CPU_I2C_Initialize(uint8_t i2cBus, bool fastSpeed)
 // Uninitialise the I2C bus
 bool CPU_I2C_Uninitialize(uint8_t i2cBus)
 {
-    esp_err_t ret = i2c_driver_delete((i2c_port_t)i2cBus); 
+    esp_err_t ret = i2c_driver_delete((i2c_port_t)i2cBus);
     if (ret != ESP_OK)
     {
         return false;
@@ -87,7 +85,7 @@ I2cTransferStatus CPU_I2C_WriteRead(
     int readSize)
 {
     esp_err_t i2cStatus;
-    I2cTransferStatus transferResult  = I2cTransferStatus_FullTransfer;
+    I2cTransferStatus transferResult = I2cTransferStatus_FullTransfer;
 
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
 
@@ -125,7 +123,7 @@ I2cTransferStatus CPU_I2C_WriteRead(
         default:
             transferResult = I2cTransferStatus_UnknownError;
             break;
-        case ESP_FAIL :
+        case ESP_FAIL:
             transferResult = I2cTransferStatus_SlaveAddressNotAcknowledged;
             break;
         case ESP_ERR_TIMEOUT:

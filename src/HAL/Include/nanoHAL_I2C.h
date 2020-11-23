@@ -27,13 +27,12 @@ struct I2C_DEVICE_CONFIGURATION
     bool fastMode;   // Speed false=normal(100Khz), true=fast(400khz)
 };
 
-
 // Initialise the i2cConfig structure
 // Called on CLR startup
 bool nanoI2C_Initialize();
 void nanoI2C_Uninitialize();
 
-    // Open I2C bus / device using device configuration
+// Open I2C bus / device using device configuration
 // Register GPIO pins as in use.
 // Return result, if S_OK then deviceHandle returned
 HRESULT nanoI2C_OpenDevice(I2C_DEVICE_CONFIGURATION &config, uint32_t &deviceHandle);

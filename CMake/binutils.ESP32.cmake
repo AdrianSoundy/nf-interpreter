@@ -625,7 +625,10 @@ macro(nf_add_idf_as_library)
         message(FATAL_ERROR "Couldn't get IDF version from target __idf_build_target")
     endif()
 
+    # print environment variables
     message(STATUS "ESP_IDF_VERSION: $ENV{ESP_IDF_VERSION}")
+    message(STATUS "ESP_ROM_ELF_DIR: $ENV{ESP_ROM_ELF_DIR}")
+
     message(STATUS "Current IDF version is: ${MY_IDF_VER}")
 
     string(FIND ${MY_IDF_VER} "-dirty" MY_IDF_VER_DIRTY)
@@ -691,6 +694,7 @@ macro(nf_add_idf_as_library)
         esp_eth
         esp_psram
         esp_adc
+        esp_lcd
         littlefs
     )
 
@@ -707,6 +711,7 @@ macro(nf_add_idf_as_library)
         idf::esp_eth
         idf::esp_psram
         idf::esp_adc
+        idf::esp_lcd
         idf::littlefs
     )
 

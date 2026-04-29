@@ -32,6 +32,13 @@ typedef enum __nfpack UIElement_Flags
     UIElement_Flags_IsVisibleCache = 32768,
 } UIElement_Flags;
 
+typedef enum __nfpack DisplayControl_ConfigurationType
+{
+    DisplayControl_ConfigurationType_Spi = 0,
+    DisplayControl_ConfigurationType_I2c = 1,
+    DisplayControl_ConfigurationType_Dsi = 2,
+} DisplayControl_ConfigurationType;
+
 typedef enum __nfpack DrawTextOptions
 {
     DrawTextOptions_None = 0,
@@ -64,13 +71,13 @@ typedef enum __nfpack TouchCaptureMode
     TouchCaptureMode_SubTree = 2,
 } TouchCaptureMode;
 
-/*
 typedef enum __nfpack RoutedEventArgs_Flags
 {
     RoutedEventArgs_Flags_Handled = 1,
     RoutedEventArgs_Flags_InvokingHandler = 2,
 } RoutedEventArgs_Flags;
 
+/*
 typedef enum __nfpack SetWindowType
 {
     SetWindowType_NoWindowing = 0,
@@ -94,6 +101,40 @@ typedef enum __nfpack TouchInputFlags
     TouchInputFlags_Pen = 64,
     TouchInputFlags_Palm = 128,
 } TouchInputFlags;
+
+struct Library_nanoFramework_Graphics_nanoFramework_UI_DsiBusConfiguration
+{
+    static const int FIELD___numLanes = 1;
+    static const int FIELD___laneBitrateMbps = 2;
+
+    //--//
+};
+
+struct Library_nanoFramework_Graphics_nanoFramework_UI_DsiConfiguration
+{
+    static const int FIELD___busConfiguration = 1;
+    static const int FIELD___panelConfiguration = 2;
+
+    //--//
+};
+
+struct Library_nanoFramework_Graphics_nanoFramework_UI_DsiPanelConfiguration
+{
+    static const int FIELD___horizontalResolution = 1;
+    static const int FIELD___verticalResolution = 2;
+    static const int FIELD___hsyncPorch = 3;
+    static const int FIELD___hsyncPulseWidth = 4;
+    static const int FIELD___hsyncBackPorch = 5;
+    static const int FIELD___hsyncFrontPorch = 6;
+    static const int FIELD___vsyncPulseWidth = 7;
+    static const int FIELD___vsyncPorch = 8;
+    static const int FIELD___vsyncBackPorch = 9;
+    static const int FIELD___vsyncFrontPorch = 10;
+    static const int FIELD___backLight = 11;
+
+    //--//
+};
+
 
 struct Library_nanoFramework_Graphics_nanoFramework_UI_RoutedEvent
 {
@@ -255,8 +296,7 @@ struct Library_nanoFramework_Graphics_nanoFramework_UI_Bitmap
     NANOCLR_NATIVE_DECLARE(DrawText___VOID__STRING__nanoFrameworkUIFont__U4__I4__I4);
     NANOCLR_NATIVE_DECLARE(SetPixel___VOID__I4__I4__U4);
     NANOCLR_NATIVE_DECLARE(GetPixelInt___U4__I4__I4);
-    NANOCLR_NATIVE_DECLARE(
-        DrawTextInRect___BOOLEAN__BYREF_STRING__BYREF_I4__BYREF_I4__I4__I4__I4__I4__U4__U4__nanoFrameworkUIFont);
+    NANOCLR_NATIVE_DECLARE(DrawTextInRect___BOOLEAN__BYREF_STRING__BYREF_I4__BYREF_I4__I4__I4__I4__I4__U4__U4__nanoFrameworkUIFont);
 
     //--//
 };
@@ -837,17 +877,6 @@ struct Library_nanoFramework_Graphics_nanoFramework_UI_CancelEventArgs
     //--//
 };
 
-struct Library_nanoFramework_Graphics_nanoFramework_UI_SpiConfiguration
-{
-    static const int FIELD___spiBus = 1;
-    static const int FIELD___chipSelect = 2;
-    static const int FIELD___dataCommand = 3;
-    static const int FIELD___reset = 4;
-    static const int FIELD___backLight = 5;
-
-    //--//
-};
-
 struct Library_nanoFramework_Graphics_nanoFramework_UI_ScreenConfiguration
 {
     static const int FIELD___x = 1;
@@ -855,15 +884,6 @@ struct Library_nanoFramework_Graphics_nanoFramework_UI_ScreenConfiguration
     static const int FIELD___width = 3;
     static const int FIELD___height = 4;
     static const int FIELD___graphicDriver = 5;
-
-    //--//
-};
-
-struct Library_nanoFramework_Graphics_nanoFramework_UI_I2cConfiguration
-{
-    static const int FIELD___i2cBus = 1;
-    static const int FIELD___address = 2;
-    static const int FIELD___fastMode = 3;
 
     //--//
 };
@@ -884,10 +904,7 @@ struct Library_nanoFramework_Graphics_nanoFramework_UI_DisplayControl
     NANOCLR_NATIVE_DECLARE(Write___STATIC__VOID__U2__U2__U2__U2__SZARRAY_U2);
     NANOCLR_NATIVE_DECLARE(Write___STATIC__VOID__STRING__U2__U2__U2__U2__nanoFrameworkUIFont__U4__U4);
     NANOCLR_NATIVE_DECLARE(NativeChangeOrientation___STATIC__BOOLEAN__nanoFrameworkUIDisplayOrientation);
-    NANOCLR_NATIVE_DECLARE(
-        NativeInitSpi___STATIC__U4__nanoFrameworkUISpiConfiguration__nanoFrameworkUIScreenConfiguration__U4);
-    NANOCLR_NATIVE_DECLARE(
-        NativeInitI2c___STATIC__U4__nanoFrameworkUII2cConfiguration__nanoFrameworkUIScreenConfiguration__U4);
+    NANOCLR_NATIVE_DECLARE(NativeInit___STATIC__U4__nanoFrameworkUIDisplayControlConfigurationType__OBJECT__nanoFrameworkUIScreenConfiguration__U4);
 
     //--//
 };
@@ -911,6 +928,15 @@ struct Library_nanoFramework_Graphics_nanoFramework_UI_GraphicDriver
     static const int FIELD___brightness = 15;
     static const int FIELD___defaultOrientation = 16;
     static const int FIELD___setWindowType = 17;
+
+    //--//
+};
+
+struct Library_nanoFramework_Graphics_nanoFramework_UI_I2cConfiguration
+{
+    static const int FIELD___i2cBus = 1;
+    static const int FIELD___address = 2;
+    static const int FIELD___fastMode = 3;
 
     //--//
 };
@@ -1023,6 +1049,17 @@ struct Library_nanoFramework_Graphics_nanoFramework_UI_Input_TouchEvents
     //--//
 };
 
+struct Library_nanoFramework_Graphics_nanoFramework_UI_SpiConfiguration
+{
+    static const int FIELD___spiBus = 1;
+    static const int FIELD___chipSelect = 2;
+    static const int FIELD___dataCommand = 3;
+    static const int FIELD___reset = 4;
+    static const int FIELD___backLight = 5;
+
+    //--//
+};
+
 struct Library_nanoFramework_Graphics_nanoFramework_UI_Threading_DispatcherObject
 {
     static const int FIELD__Dispatcher = 1;
@@ -1085,10 +1122,8 @@ struct Library_nanoFramework_Graphics_nanoFramework_UI_TouchCollectorConfigurati
     static const int FIELD_STATIC___collectionBufferSize = 38;
 
     NANOCLR_NATIVE_DECLARE(GetTouchPoints___STATIC__VOID__BYREF_I4__SZARRAY_I2__SZARRAY_I2);
-    NANOCLR_NATIVE_DECLARE(
-        GetTouchInput___STATIC__VOID__nanoFrameworkUITouchCollectorConfigurationTouchInput__BYREF_I4__BYREF_I4__BYREF_I4);
-    NANOCLR_NATIVE_DECLARE(
-        SetTouchInput___STATIC__VOID__nanoFrameworkUITouchCollectorConfigurationTouchInput__I4__I4__I4);
+    NANOCLR_NATIVE_DECLARE(GetTouchInput___STATIC__VOID__nanoFrameworkUITouchCollectorConfigurationTouchInput__BYREF_I4__BYREF_I4__BYREF_I4);
+    NANOCLR_NATIVE_DECLARE(SetTouchInput___STATIC__VOID__nanoFrameworkUITouchCollectorConfigurationTouchInput__I4__I4__I4);
 
     //--//
 };

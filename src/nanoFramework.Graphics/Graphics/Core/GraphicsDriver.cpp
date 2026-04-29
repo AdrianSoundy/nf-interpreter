@@ -137,6 +137,8 @@ void GraphicsDriver::DrawEllipse(
 
 void GraphicsDriver::Clear(const PAL_GFX_Bitmap &bitmap)
 {
+    ets_printf("GraphicsDriver::Clear: Width %d, Height %d\n", bitmap.width, bitmap.height);
+    ets_printf("GraphicsDriver::Clear: Clearing bitmap %X, size %d\n", bitmap.data, GetSize(bitmap.width, bitmap.height));
     memset(bitmap.data, 0, GetSize(bitmap.width, bitmap.height));
 }
 

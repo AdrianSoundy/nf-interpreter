@@ -41,6 +41,26 @@ struct DisplayInterfaceConfig
             CLR_INT16 Vertical_front_porch;
             CLR_INT16 Frequency_Divider;
         } VideoDisplay;
+        struct
+        {
+            CLR_INT16 backlight;
+
+            // Bus configuration
+            CLR_UINT8 numLanes;
+            CLR_UINT32 laneBitrateMbps;
+
+            // Panel configuration
+            CLR_UINT32 horizontal_resolution;
+            CLR_UINT32 vertical_resolution;
+            CLR_UINT32 hsyncPorch;
+            CLR_UINT32 hsync_pulse_width;
+            CLR_UINT32 hsync_back_porch;
+            CLR_UINT32 hsync_front_porch;
+            CLR_UINT32 vsync_pulse_width;
+            CLR_UINT32 vsyncPorch;
+            CLR_UINT32 vsync_back_porch;
+            CLR_UINT32 vsync_front_porch;
+        } Dsi;
     };
     struct
     {

@@ -47,7 +47,8 @@ void app_main()
     UBaseType_t taskPriority = 5;
 
     // Switch off logging so as not to interfere with WireProtocol over Uart0
-    esp_log_level_set("*", ESP_LOG_NONE);
+//    esp_log_level_set("*", ESP_LOG_NONE);
+    esp_log_level_set("*", ESP_LOG_DEBUG);
 
     ESP_ERROR_CHECK(nvs_flash_init());
 

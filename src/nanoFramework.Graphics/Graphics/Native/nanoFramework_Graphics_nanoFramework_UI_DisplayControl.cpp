@@ -11,6 +11,12 @@
 
 extern GraphicsDriver g_GraphicsDriver;
 typedef Library_nanoFramework_Graphics_nanoFramework_UI_SpiConfiguration SpiConfiguration;
+typedef Library_nanoFramework_Graphics_nanoFramework_UI_I2cConfiguration I2cConfiguration;
+
+typedef Library_nanoFramework_Graphics_nanoFramework_UI_DsiConfiguration DsiConfiguration;
+typedef Library_nanoFramework_Graphics_nanoFramework_UI_DsiBusConfiguration DsiBusConfiguration;
+typedef Library_nanoFramework_Graphics_nanoFramework_UI_DsiPanelConfiguration DsiPanelConfiguration;
+
 typedef Library_nanoFramework_Graphics_nanoFramework_UI_ScreenConfiguration ScreenConfiguration;
 typedef Library_nanoFramework_Graphics_nanoFramework_UI_GraphicDriver GraphicDriver;
 
@@ -106,32 +112,83 @@ HRESULT Library_nanoFramework_Graphics_nanoFramework_UI_DisplayControl::
 }
 
 HRESULT Library_nanoFramework_Graphics_nanoFramework_UI_DisplayControl::
-    NativeInitSpi___STATIC__U4__nanoFrameworkUISpiConfiguration__nanoFrameworkUIScreenConfiguration__U4(
-        CLR_RT_StackFrame &stack)
+    NativeInit___STATIC__U4__nanoFrameworkUIDisplayControlConfigurationType__OBJECT__nanoFrameworkUIScreenConfiguration__U4( 
+        CLR_RT_StackFrame &stack )
+
 {
     NANOCLR_HEADER();
 
-    CLR_RT_HeapBlock *spiconfig;
+    CLR_RT_HeapBlock *config;
     CLR_RT_HeapBlock *screenconfig;
     CLR_RT_HeapBlock *graphicDriver;
     CLR_INT32 desired;
+    DisplayControl_ConfigurationType configType;
+
     // Initialise Graphics after devices initialised
     DisplayInterfaceConfig displayConfig;
 
-    desired = stack.Arg2().NumericByRef().u4;
+    configType = (DisplayControl_ConfigurationType)stack.Arg0().NumericByRef().u4;
+
+    desired = stack.Arg3().NumericByRef().u4;
     g_GraphicsMemoryHeap.Initialize(desired);
 
-    spiconfig = stack.Arg0().Dereference();
-    screenconfig = stack.Arg1().Dereference();
+    config = stack.Arg1().Dereference();
+    screenconfig = stack.Arg2().Dereference();
 
-    // Define SPI display configuration for the display
-    // internally SPI bus ID is zero based, so better take care of that here
-    displayConfig.Spi.spiBus = spiconfig[SpiConfiguration::FIELD___spiBus].NumericByRef().u1 - 1;
+    if (configType == DisplayControl_ConfigurationType_Spi)
+    {
+        // Define SPI display configuration for the display
+        // internally SPI bus ID is zero based, so better take care of that here
+        displayConfig.Spi.spiBus = config[SpiConfiguration::FIELD___spiBus].NumericByRef().u1 - 1;
+        displayConfig.Spi.chipSelect = config[SpiConfiguration::FIELD___chipSelect].NumericByRef().s4;
+        displayConfig.Spi.dataCommand = config[SpiConfiguration::FIELD___dataCommand].NumericByRef().s4;
+        displayConfig.Spi.reset = config[SpiConfiguration::FIELD___reset].NumericByRef().s4;
+        displayConfig.Spi.backLight = config[SpiConfiguration::FIELD___backLight].NumericByRef().s4;
+    }
+    else 
+    if (configType == DisplayControl_ConfigurationType_I2c)
+    {
+        // Define I2C display configuration for the display
+        displayConfig.I2c.i2cBus = config[I2cConfiguration::FIELD___i2cBus].NumericByRef().s1;
+        displayConfig.I2c.address = config[I2cConfiguration::FIELD___address].NumericByRef().s1;
+        displayConfig.I2c.fastMode = config[I2cConfiguration::FIELD___fastMode].NumericByRef().s1;
+    }
+    else if (configType == DisplayControl_ConfigurationType_Dsi)
+    {
+        CLR_RT_HeapBlock * dsiBusConfig = config[DsiConfiguration::FIELD___busConfiguration].Dereference();
+        CLR_RT_HeapBlock * dsiPanelConfig = config[DsiConfiguration::FIELD___panelConfiguration].Dereference();
 
-    displayConfig.Spi.chipSelect = spiconfig[SpiConfiguration::FIELD___chipSelect].NumericByRef().s4;
-    displayConfig.Spi.dataCommand = spiconfig[SpiConfiguration::FIELD___dataCommand].NumericByRef().s4;
-    displayConfig.Spi.reset = spiconfig[SpiConfiguration::FIELD___reset].NumericByRef().s4;
-    displayConfig.Spi.backLight = spiconfig[SpiConfiguration::FIELD___backLight].NumericByRef().s4;
+        // Bus configuration
+        displayConfig.Dsi.numLanes = dsiBusConfig[DsiBusConfiguration::FIELD___numLanes].NumericByRef().u1;
+        displayConfig.Dsi.laneBitrateMbps = dsiBusConfig[DsiBusConfiguration::FIELD___laneBitrateMbps].NumericByRef().u4;
+
+        // Lcd Panel configuration 
+        displayConfig.Dsi.horizontal_resolution =
+            dsiPanelConfig[DsiPanelConfiguration::FIELD___horizontalResolution].NumericByRef().u4;      
+        displayConfig.Dsi.vertical_resolution =
+            dsiPanelConfig[DsiPanelConfiguration::FIELD___verticalResolution].NumericByRef().u4;
+
+        // Timing configuration, horizontal        
+        displayConfig.Dsi.hsyncPorch = dsiPanelConfig[DsiPanelConfiguration::FIELD___hsyncPorch].NumericByRef().u4;
+        displayConfig.Dsi.hsync_pulse_width =
+            dsiPanelConfig[DsiPanelConfiguration::FIELD___hsyncPulseWidth].NumericByRef().u4;       
+        displayConfig.Dsi.hsync_back_porch =
+            dsiPanelConfig[DsiPanelConfiguration::FIELD___hsyncBackPorch].NumericByRef().u4;
+        displayConfig.Dsi.hsync_front_porch =
+            dsiPanelConfig[DsiPanelConfiguration::FIELD___hsyncFrontPorch].NumericByRef().u4;  
+            
+        // Timing configuration, vertical        
+        displayConfig.Dsi.vsync_pulse_width =
+            dsiPanelConfig[DsiPanelConfiguration::FIELD___vsyncPulseWidth].NumericByRef().u4;
+        displayConfig.Dsi.vsyncPorch = dsiPanelConfig[DsiPanelConfiguration::FIELD___vsyncPorch].NumericByRef().u4;
+        displayConfig.Dsi.vsync_back_porch =
+            dsiPanelConfig[DsiPanelConfiguration::FIELD___vsyncBackPorch].NumericByRef().u4;    
+        displayConfig.Dsi.vsync_front_porch =
+            dsiPanelConfig[DsiPanelConfiguration::FIELD___vsyncFrontPorch].NumericByRef().u4;
+
+        displayConfig.Dsi.backlight = dsiPanelConfig[DsiPanelConfiguration::FIELD___backLight].NumericByRef().s4;
+    }            
+
     displayConfig.Screen.x = screenconfig[ScreenConfiguration::FIELD___x].NumericByRef().u2;
     displayConfig.Screen.y = screenconfig[ScreenConfiguration::FIELD___y].NumericByRef().u2;
     displayConfig.Screen.width = screenconfig[ScreenConfiguration::FIELD___width].NumericByRef().u2;
@@ -192,17 +249,6 @@ HRESULT Library_nanoFramework_Graphics_nanoFramework_UI_DisplayControl::
     stack.SetResult_U4(g_GraphicsMemoryHeap.GetMaxBuffer());
 
     NANOCLR_NOCLEANUP_NOLABEL();
-}
-
-HRESULT Library_nanoFramework_Graphics_nanoFramework_UI_DisplayControl::
-    NativeInitI2c___STATIC__U4__nanoFrameworkUII2cConfiguration__nanoFrameworkUIScreenConfiguration__U4(
-        CLR_RT_StackFrame &stack)
-{
-    NANOCLR_HEADER();
-
-    NANOCLR_SET_AND_LEAVE(stack.NotImplementedStub());
-
-    NANOCLR_NOCLEANUP();
 }
 
 HRESULT Library_nanoFramework_Graphics_nanoFramework_UI_DisplayControl::

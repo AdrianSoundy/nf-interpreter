@@ -30,6 +30,9 @@ config GRAPHICS_DISPLAY_OTM8009A
 config GRAPHICS_DISPLAY_GENERIC_SPI
     bool "Generic SPI"
 
+config GRAPHICS_DISPLAY_GENERIC_DSI
+    bool "Generic DSI"
+
 endchoice
 
 config GRAPHICS_DISPLAY
@@ -41,6 +44,7 @@ config GRAPHICS_DISPLAY
     default "GC9A01_240x240_SPI.cpp"            if GRAPHICS_DISPLAY_GC9A01
     default "Otm8009a_DSI_Video_Mode.cpp"       if GRAPHICS_DISPLAY_OTM8009A
     default "Generic_SPI.cpp"                   if GRAPHICS_DISPLAY_GENERIC_SPI
+    default "Generic_DSI.cpp"                   if GRAPHICS_DISPLAY_GENERIC_DSI
 
 choice GRAPHICS_DISPLAY_INTERFACE_CHOICE
     prompt "Display interface"
@@ -51,12 +55,16 @@ config GRAPHICS_IFACE_SPI
 config GRAPHICS_IFACE_DSI_VIDEO
     bool "DSI Video Mode"
 
+config GRAPHICS_IFACE_DSI_GENERIC
+    bool "DSI Generic"
+
 endchoice
 
 config GRAPHICS_DISPLAY_INTERFACE
     string
     default "Spi_To_Display.cpp"                if GRAPHICS_IFACE_SPI
     default "DSI_To_Display_Video_Mode.cpp"     if GRAPHICS_IFACE_DSI_VIDEO
+    default "DSI_To_Display.cpp"                if GRAPHICS_IFACE_DSI_GENERIC
 
 choice TOUCHPANEL_DRIVER
     prompt "Touch panel driver"
@@ -74,14 +82,18 @@ config TOUCH_CST816S
 config TOUCH_STMPE811QTR
     bool "STMPE811QTR"
 
+config TOUCH_GT911
+    bool "GT911"
+
 endchoice
 
 config TOUCHPANEL_DEVICE
     string
-    default "XPT2046.cpp"        if TOUCH_XPT2046
-    default "ft6x06_I2C.cpp"     if TOUCH_FT6X06
-    default "CST816S.cpp"        if TOUCH_CST816S
+    default "XPT2046.cpp"         if TOUCH_XPT2046
+    default "ft6x06_I2C.cpp"      if TOUCH_FT6X06
+    default "CST816S.cpp"         if TOUCH_CST816S
     default "STMPE811QTR_I2C.cpp" if TOUCH_STMPE811QTR
+    default "Gt911_i2c.cpp"       if TOUCH_GT911
 
 choice TOUCHPANEL_INTERFACE_CHOICE
     prompt "Touch panel interface"

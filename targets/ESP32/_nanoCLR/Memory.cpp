@@ -39,6 +39,12 @@ static const char *TAG = "Memory";
 // Space to leave free in internal RAM for allocation by IDF malloc
 #define INTERNAL_RAM_LEAVE_FREE_FOR_ALLOCATION (ESP32_RESERVE_IRAM_IDF_ALLOCATION_KB * 1024)
 
+#if defined(CONFIG_IDF_TARGET_ESP32P4)
+#define ESP32_RESERVE_MEMORY_FOR_VIDEO_BUFFER (4 * 1024 * 1024) // reserve 4Mb for video buffer
+#else
+#define ESP32_RESERVE_MEMORY_FOR_VIDEO_BUFFER (0) // no video buffer reserved
+#endif
+
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 // uncomment, in case there is a need to check the heap info
@@ -131,7 +137,7 @@ void HeapLocation(unsigned char *&baseAddress, unsigned int &sizeInBytes)
             largestFreeBlock = spiramMaxSize;
 
             // get heap size to allocate
-            managedHeapSize = spiramMaxSize - ESP32_RESERVE_SPIRAM_IDF_ALLOCATION_BYTES;
+            managedHeapSize = spiramMaxSize - ESP32_RESERVE_SPIRAM_IDF_ALLOCATION_BYTES - ESP32_RESERVE_MEMORY_FOR_VIDEO_BUFFER;
 
             ESP_LOGI(TAG, "Allocating managed heap from SPIRAM");
         }

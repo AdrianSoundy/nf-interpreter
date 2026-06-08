@@ -76,7 +76,7 @@ esp_err_t NF_ESP32_InitialiseEthernet(uint8_t *pMacAdr)
     eth_phy_config_t phy_config = ETH_PHY_DEFAULT_CONFIG();
     phy_config.phy_addr = CONFIG_ESP32_ETHERNET_PHY_ADDR;
 
-// If not SPI then must be 
+// If not SPI then must be
 // Internal Ethernet controller
 #if !defined(CONFIG_ESP32_ETHERNET_SPI) || CONFIG_ESP32_ETHERNET_SPI == FALSE
 
